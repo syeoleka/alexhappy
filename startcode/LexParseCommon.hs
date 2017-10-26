@@ -1,12 +1,15 @@
 module LexParseCommon where
-       
+
 import Control.Monad.State
 import Control.Monad
 import Data.Word
 import Codec.Binary.UTF8.String (encode)
 
-data Token 
+data Token
      = TCat
+     | TTwo
+     | TOne
+     | TTrigger
      | TEOF
      | TString String
      deriving (Eq,Show)
@@ -20,7 +23,7 @@ data AlexInput
     airest::String,
     ailineno::Int}
   deriving Show
-           
+
 alexGetByte :: AlexInput -> Maybe (Word8,AlexInput)
 alexGetByte ai
   = case (aibytes ai) of
@@ -34,12 +37,12 @@ alexGetByte ai
                                    aibytes=bs,
                                    airest=cs,
                                    ailineno=n'})
-                
-                    
+
+
 alexInputPrevChar :: AlexInput -> Char
 alexInputPrevChar (AlexInput {aiprev=c}) = c
 
-data ParseState = 
+data ParseState =
      ParseState {input::AlexInput,
                  lexSC::Int,       --Lexer start code
                  commentDepth::Int,--Comment depth

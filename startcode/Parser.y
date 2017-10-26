@@ -13,21 +13,28 @@ import Lexer
 
 %token
   cat           {TCat}
-  string        {TString $$}
-
+  one           {TOne}
+  two           {TTwo}
+  trigger       {TTrigger}
 %%
 Program : Endowments {$1}
 
 Endowments:               {[]}
-          |string Catlist Endowments {($1,$2):$3}
+          | Result1       {result1}
+          | Result2       {result2}
 
-Catlist : cat {1}
-        | Catlist cat {$1+1}
+
+
+Result1 : one cat         {}
+Result2 : two cat         {}
 
 {
 parseError _ = do
   lno <- getLineNo
   error $ "Parse error on line "++show lno
+
+result1 = [([], 1)]
+result2 = [([], 2)]
 
 parse::String->[(String,Int)]
 parse s = evalP parserAct s
